@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DeleteResult, ILike, Repository } from 'typeorm';
 import { TemaService } from '../../tema/services/tema.service';
@@ -16,6 +16,7 @@ export class PostagemService {
     return await this.postagemRepository.find({
       relations: {
         tema: true,
+        usuario: true
       },
     });
   }
@@ -26,12 +27,13 @@ export class PostagemService {
         id,
       },
       relations: {
-        tema: true
+        tema: true,
+        usuario: true
       }
     });
 
     if (!postagem) {
-      throw new HttpException('Postagem não encontrada!', HttpStatus.NOT_FOUND);
+      throw new NotFoundException('Postagem não encontrada!');
     }
 
     return postagem;
@@ -43,7 +45,8 @@ export class PostagemService {
         titulo: ILike(`%${titulo}%`),
       },
       relations: {
-        tema: true
+        tema: true,
+        usuario: true
       }
     });
   }
