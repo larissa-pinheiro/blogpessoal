@@ -30,20 +30,21 @@ export class AuthService {
   }
 
   async login(usuarioLogin: UsuarioLogin) {
-    const payload = { sub: usuarioLogin.usuario }
+    const usuarioValidado = await this.validateUser(usuarioLogin.usuario, usuarioLogin.senha);
 
-    const buscaUsuario = await this.usuarioService.findByUsuario(usuarioLogin.usuario)
+    if (!usuarioValidado)
+      throw new NotFoundException('Usuário ou senha inválidos!');
 
-    if (!buscaUsuario)
-      throw new NotFoundException('Usuário não encontrado!')
+    const payload = { sub: usuarioValidado.usuario };
 
     return {
-      id: buscaUsuario.id,
-      nome: buscaUsuario.nome,
-      usuario: usuarioLogin.usuario,
+      id: usuarioValidado.id,
+      nome: usuarioValidado.nome,
+      usuario: usuarioValidado.usuario,
       senha: '',
-      foto: buscaUsuario.foto,
+      foto: usuarioValidado.foto,
       token: `Bearer ${this.jwtService.sign(payload)}`,
-    }
+    };
   }
+
 }
