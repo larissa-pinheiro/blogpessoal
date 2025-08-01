@@ -1,3 +1,4 @@
+import { ApiProperty } from "@nestjs/swagger"
 import { IsEmail, IsNotEmpty, IsOptional, IsString, Matches, MaxLength, MinLength } from "class-validator"
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm"
 import { Postagem } from "../../postagem/entities/postagem.entity"
@@ -7,6 +8,7 @@ export class Usuario {
   @PrimaryGeneratedColumn()
   id: number
 
+  @ApiProperty()
   @IsNotEmpty()
   @IsString({ message: 'Nome deve conter apenas texto' })
   @Matches(/\S/, { message: 'Nome não pode conter apenas espaços' })
@@ -18,12 +20,14 @@ export class Usuario {
   @Column({ length: 255, nullable: false })
   nome: string
 
+  @ApiProperty()
   @IsNotEmpty()
   @IsEmail({}, { message: 'Email inválido' })
   @MaxLength(255, { message: 'Email excede o limite permitido' })
   @Column({ length: 255, nullable: false, unique: true })
   usuario: string
 
+  @ApiProperty()
   @IsNotEmpty({ message: 'Senha é obrigatória' })
   @IsString({
     message:
@@ -43,12 +47,14 @@ export class Usuario {
   @Column({ length: 255, nullable: false })
   senha: string
 
+  @ApiProperty()
   @IsOptional()
   @IsString({ message: 'Foto deve ser uma URL válida' })
   @MaxLength(5000, { message: 'Foto excede o limite permitido' })
   @Column({ length: 5000, nullable: true })
   foto?: string
 
+  @ApiProperty()
   @OneToMany(() => Postagem, (postagem) => postagem.usuario)
   postagem: Postagem[]
 }
